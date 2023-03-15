@@ -26,6 +26,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
+  socketId:{
+    type: String,
+    default: "",
+  }
 });
 
 module.exports = mongoose.model("ChatUsers", userSchema);
