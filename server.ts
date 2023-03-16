@@ -1,6 +1,6 @@
 const connectDatabase = require("./db/db");
 const express = require("express");
-const fs = require('fs');
+const fs = require("fs");
 const app = express();
 const http = require("http");
 const socket = require("socket.io");
@@ -12,7 +12,7 @@ const PORT = 8080;
 const cors = require("cors");
 
 app.use(express.json());
-app.use(express.static(__dirname + "/uploads"))
+app.use(express.static(__dirname + "/uploads"));
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
@@ -32,18 +32,17 @@ var onlineUsers = <any>new Map();
 let chatSocket: any;
 global.onlineUsers = onlineUsers;
 
-
 io.on("connection", (socket: any) => {
   socket.on("add-user", (userId: any) => {
     onlineUsers.set(userId, socket.id);
   });
 
   socket.on("send-msg", (data: any) => {
-    console.log(data.to);
+    console.log('data',data);
     const userSocketId = getUserSocketId(data.to);
-    console.log('user socket', userSocketId);
+    console.log("user socket", userSocketId);
     if (userSocketId) {
-      io.to(userSocketId).emit("msg-recieve", data.msg);
+      io.to(userSocketId).emit("msg-recieve", { msg: data.msg, image: data.image });
     }
   });
 
@@ -52,15 +51,12 @@ io.on("connection", (socket: any) => {
     return userSocketId ? userSocketId : null;
   }
 
-  socket.on("upload", (data:any, callback:any) => {
+  socket.on("upload", (data: any, callback: any) => {
     console.log(data.to);
     const userSocketId = getUserSocketId(data.to);
-    console.log('user socket', userSocketId);
-    if (userSocketId) {
-      io.to(userSocketId).emit("msg-recieve1", data.image.image);
-    }
+    // console.log("user socket", userSocketId);
+    // if (userSocketId) {
+    //   io.to(userSocketId).emit("msg-recieve1", data.image.image);
+    // }
   });
-  
-
-
 });
