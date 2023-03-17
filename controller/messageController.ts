@@ -47,9 +47,8 @@ module.exports.addFile = async (req: any, res: any, next: any) => {
   try {
     console.log('user body',req.body)
     const { from, to,message } = req.body;
-    const userFile = req.file.filename;
+    const userFile = req.file?.filename;
     console.log(message);
-
 
     const data = await Messages.create({
       users: [from, to],
