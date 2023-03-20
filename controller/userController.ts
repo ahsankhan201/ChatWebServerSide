@@ -1,6 +1,7 @@
 // Import the User model from userModel and the bcrypt library
 const User = require("../models/userModel");
 const bcrypt = require("bcryptjs");
+const MessageModel=require("../models/messageModel");
 
 // Define the login function
 module.exports.login = async (
@@ -74,7 +75,6 @@ module.exports.register = async (
 // Define the getAllUsers function
 module.exports.getAllUsers = async (req: { params: { id: any } }, res: any) => {
   try {
-    // Find all users except the one with the specified id
     const users = await User.find({ _id: { $ne: req.params.id } }).select([
       "email",
       "username",
@@ -82,10 +82,8 @@ module.exports.getAllUsers = async (req: { params: { id: any } }, res: any) => {
       "_id",
     ]);
 
-    // If the users are retrieved successfully, return a status of 201 and the users object
     return res.status(201).json(users);
   } catch (ex) {
-    // If an exception is thrown, return an error object
     return res.status(500).json({ error: ex });
   }
 };

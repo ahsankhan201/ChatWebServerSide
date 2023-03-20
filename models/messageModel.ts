@@ -15,7 +15,12 @@ const MessageSchema = mongo.Schema(
       type: String,
       required: false
     },
+    msgRead:{
+      type: Boolean,
+      default: false,
+    },
   },
+  
   {
     timestamps: true,
   }

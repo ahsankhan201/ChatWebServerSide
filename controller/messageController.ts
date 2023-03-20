@@ -10,7 +10,6 @@ module.exports.getMessages = async (req: any, res: any, next: any) => {
     }).sort({ updatedAt: 1 });
 
     const projectedMessages = messages.map((msg: any) => {
-      console.log("msg",msg)
         return {
           fromSelf: msg.sender.toString() === from,
           image: msg.image,
@@ -36,6 +35,7 @@ module.exports.addMessage = async (req: any, res: any, next: any) => {
       sender: from,
     });
 
+
     if (data) return res.json({ msg: "Message added successfully." });
     else return res.json({ msg: "Failed to add message to the database" });
   } catch (ex: any) {
@@ -56,8 +56,6 @@ module.exports.addFile = async (req: any, res: any, next: any) => {
       image: userFile,
       message: { text: message },
     });
-    console.log('data of post',data)
-
     if (data) return res.json({ msg: "Success",image:data.image,message:data.message.text });
   } catch (ex: any) {
     next(ex);
@@ -73,3 +71,31 @@ module.exports.deleteAllMessages = async (req: any, res: any, next: any) => {
     next(ex);
   }
 };
+
+
+
+module.exports.getUserMessages = async (req: any, res: any, next: any) => {
+
+  try {
+    console.log(req.body)
+    const { userId } = req.body;
+    const messages = await Messages.find({
+      users: {
+        $in: [userId],
+      },
+    }).sort({ updatedAt: 1 });
+
+    const projectedMessages = messages.map((msg: any) => {
+      return {
+        fromSelf: msg.sender.toString() === userId,
+        image: msg.image,
+        message: msg.message.text,
+      };
+    });
+
+    res.json(projectedMessages);
+  } catch (ex: any) {
+    next(ex);
+  }
+};
+
